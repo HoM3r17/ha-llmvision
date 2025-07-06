@@ -656,6 +656,8 @@ action:
                           color: !input notification_color
                           notification_icon: !input notification_icon
                           sticky: !input notification_sticky
+                          style: big_text
+                          big_text: "{{response.response_text}}"
                           # iOS only
                           push:
                             interruption-level: "{{'passive' if notification_delivery=='Dynamic' else 'active'}}"
