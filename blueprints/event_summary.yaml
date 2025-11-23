@@ -578,6 +578,7 @@ action:
                                   notification_icon: !input notification_icon
                                   sticky: !input notification_sticky
                                   image: "{{ snapshot_access_file_path }}"
+                                  big_text: "{{camera_message}} has detected activity."  # ADDED
                                   # iOS only
                                   attachment:
                                     url: '{{ snapshot_access_file_path }}'
@@ -617,6 +618,12 @@ action:
                                   # Priority options
                                   ttl: 0
                                   priority: high
+                                  # Android only
+                                  channel: !input notification_channel
+                                  color: !input notification_color
+                                  notification_icon: !input notification_icon
+                                  sticky: !input notification_sticky
+                                  big_text: "{{camera_message}} has detected activity."  # ADDED
 
   - alias: "Analyze event"
     action: llmvision.stream_analyzer
@@ -681,6 +688,7 @@ action:
                           color: !input notification_color
                           notification_icon: !input notification_icon
                           sticky: !input notification_sticky
+                          big_text: "{{response.response_text}}"  # ADDED
                           # iOS only
                           push:
                             interruption-level: "{{'passive' if notification_delivery=='Dynamic' else 'active'}}"
@@ -721,6 +729,12 @@ action:
                             # Priority options
                             ttl: 0
                             priority: high
+                            # Android only
+                            channel: !input notification_channel
+                            color: !input notification_color
+                            notification_icon: !input notification_icon
+                            sticky: !input notification_sticky
+                            big_text: "{{response.response_text}}"  # ADDED
                             actions:
                             - action: 'URI'
                               title: 'See Snapshot'
