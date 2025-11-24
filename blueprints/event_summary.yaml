@@ -3,7 +3,7 @@
 # Take snapshot of triggered camera entity if using multiple cameras (? help needed)
 # Snooze blueprint or notifications
 blueprint:
-  name: AI Event Summary (v1.5.2) BT0.1
+  name: AI Event Summary (v1.5.2) BT
   author: valentinfrlch
   homeassistant:
     min_version: 2024.10.0
@@ -589,7 +589,7 @@ action:
                                       volume: !input notification_volume
                                       critical: '{{ notification_critical }}'
                                   # ANDROID BIG TEXT
-                                  style: bigtext
+                                  notification_style: bigtext
                                   big_text: "{{camera_message}} has detected activity."
 
                   - conditions:
@@ -626,7 +626,7 @@ action:
                                   notification_icon: !input notification_icon
                                   sticky: !input notification_sticky
                                   # ANDROID BIG TEXT
-                                  style: bigtext
+                                  notification_style: bigtext
                                   big_text: "{{camera_message}} has detected activity."
 
   - alias: "Analyze event"
@@ -704,7 +704,7 @@ action:
                             title: 'See Snapshot'
                             uri: "{{response.key_frame.replace('/media','/media/local') }}"
                           # ANDROID BIG TEXT
-                          style: bigtext
+                          notification_style: bigtext
                           big_text: "{{response.response_text}}"
 
             - conditions:
@@ -740,7 +740,7 @@ action:
                               title: 'See Snapshot'
                               uri: "{{response.key_frame.replace('/media','/media/local') }}"
                             # ANDROID BIG TEXT
-                            style: bigtext
+                            notification_style: bigtext
                             big_text: "{{response.response_text}}"
 
       - if:
