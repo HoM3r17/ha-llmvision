@@ -3,7 +3,7 @@
 # Take snapshot of triggered camera entity if using multiple cameras (? help needed)
 # Snooze blueprint or notifications
 blueprint:
-  name: AI Event Summary (v1.5.2) BT
+  name: AI Event Summary (v1.5.2) BT0.1
   author: valentinfrlch
   homeassistant:
     min_version: 2024.10.0
