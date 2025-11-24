@@ -443,6 +443,8 @@ variables:
   notify: !input notify
   condition_notify: !input condition_notify
   delay_notification: !input delay_notification
+  # camera_snapshot: !input camera_snapshot
+  # camera_name: '{{ states[camera_snapshot].name.replace(" ", "_") }}'
   device_name_map: >
     {% set ns = namespace(device_names=[]) %}
     {% for device_id in notify_devices %}
@@ -476,7 +478,8 @@ variables:
   camera_file_path: >
     {{ camera_entity_snapshot.replace("camera.", "")}}
   file_path: !input file_path
-  snapshot_access_file_path: '{{ file_path | replace(''/config/www'', ''/local'') | replace(''/media'', ''/media/local'') }}'
+  snapshot_access_file_path: '{{ file_path | replace(''/config/www'',
+    ''/local'') | replace(''/media'', ''/media/local'') }}'
   notification_time: !input notification_time
 
 max_exceeded: silent
@@ -532,7 +535,8 @@ action:
       then:
       - if:
         - condition: template
-          value_template: '{{ not this.attributes.last_triggered or (now() - this.attributes.last_triggered).seconds > delay_notification }}'
+          value_template: '{{ not this.attributes.last_triggered or (now() - this.attributes.last_triggered).seconds
+            > delay_notification }}'
         then:
         - choose:
             - conditions:
@@ -574,9 +578,6 @@ action:
                                   notification_icon: !input notification_icon
                                   sticky: !input notification_sticky
                                   image: "{{ snapshot_access_file_path }}"
-                                  # ANDROID BIG TEXT
-                                  notification_style: bigtext
-                                  big_text: "{{camera_message}} has detected activity."
                                   # iOS only
                                   attachment:
                                     url: '{{ snapshot_access_file_path }}'
@@ -587,6 +588,9 @@ action:
                                       name: !input notification_sound
                                       volume: !input notification_volume
                                       critical: '{{ notification_critical }}'
+                                  # ANDROID BIG TEXT
+                                  notification_style: bigtext
+                                  big_text: "{{camera_message}} has detected activity."
 
                   - conditions:
                       - condition: template
@@ -657,7 +661,8 @@ action:
       then:
       - if:
         - condition: template
-          value_template: '{{ not this.attributes.last_triggered or (now() - this.attributes.last_triggered).seconds > delay_notification }}'
+          value_template: '{{ not this.attributes.last_triggered or (now() - this.attributes.last_triggered).seconds
+            > delay_notification }}'
         then:
         - choose:
             - conditions:
@@ -687,9 +692,6 @@ action:
                           color: !input notification_color
                           notification_icon: !input notification_icon
                           sticky: !input notification_sticky
-                          # ANDROID BIG TEXT
-                          notification_style: bigtext
-                          big_text: "{{response.response_text}}"
                           # iOS only
                           push:
                             interruption-level: "{{'passive' if notification_delivery=='Dynamic' else 'active'}}"
@@ -701,6 +703,9 @@ action:
                           - action: 'URI'
                             title: 'See Snapshot'
                             uri: "{{response.key_frame.replace('/media','/media/local') }}"
+                          # ANDROID BIG TEXT
+                          notification_style: bigtext
+                          big_text: "{{response.response_text}}"
 
             - conditions:
                 - condition: template
@@ -730,18 +735,33 @@ action:
                             # Priority options
                             ttl: 0
                             priority: high
-                            # Android only
-                            channel: !input notification_channel
-                            color: !input notification_color
-                            notification_icon: !input notification_icon
-                            sticky: !input notification_sticky
-                            # ANDROID BIG TEXT
-                            notification_style: bigtext
-                            big_text: "{{response.response_text}}"
                             actions:
                             - action: 'URI'
                               title: 'See Snapshot'
                               uri: "{{response.key_frame.replace('/media','/media/local') }}"
+                            # ANDROID BIG TEXT
+                            notification_style: bigtext
+                            big_text: "{{response.response_text}}"
+
+      - if:
+        - condition: template
+          value_template: '{{ tts_notification }}'
+        then:
+        - if:
+          - condition: !input condition_notify_tts
+          then:
+          - alias: "TTS notification on notify devices"
+            repeat:
+              for_each: "{{device_name_map}}"
+              sequence:
+                - action: "notify.{{ repeat.item }}"
+                  data:
+                    message: TTS
+                    data:
+                      ttl: 0
+                      priority: high
+                      media_stream: !input tts_volume
+                      tts_text: "{{response.response_text}}"
 
   # Add Customized Actions
   - choose: []
